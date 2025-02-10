@@ -11,6 +11,10 @@ int is_empty(LES *les){
     return les -> qtde == 0;
 }
 
+int is_full(LES *les){
+   return les -> qtde == LEN;
+}
+
 int get_index(LES *les, int value){
   int idx = 0;
   while(idx < les -> qtde && les -> dados[idx] < value){
@@ -27,7 +31,7 @@ void move_left(LES *les, int idx){
 
 void insert(LES *les, int value){
   if (is_full(les)){
-    return;
+    return 0;
   }
   int idx = get_index(les, value);
   move_right(les, idx);
@@ -53,4 +57,15 @@ void show(LES *les){
     printf("%d ", les -> dados[i]);
     printf("\n");
   }
+}
+
+int main() {
+  LES les;
+  les.qtde = 10;
+  LES *p_les = &les;
+  for(int num = 10; num <=0; num--){
+    insert(p_les, num);
+    show(p_les);
+  }
+  return 0;
 }
