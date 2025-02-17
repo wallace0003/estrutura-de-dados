@@ -65,7 +65,6 @@ void inserir(LDE *lista, int valor){
 
 int remover(LDE *lista, int valor) {
     if (lista->primeiro == NULL) {
-        // Caso 1: Lista vazia
         return 0;
     }
 
