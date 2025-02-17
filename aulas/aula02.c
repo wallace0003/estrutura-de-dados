@@ -63,6 +63,36 @@ void inserir(LDE *lista, int valor){
     }
 }
 
+int remover(LDE *lista, int valor) {
+    if (lista->primeiro == NULL) {
+        // Caso 1: Lista vazia
+        return 0;
+    }
+
+    Celula *anterior = NULL;
+    Celula *atual = lista->primeiro;
+
+    while (atual != NULL && atual->valor != valor) {
+        anterior = atual;
+        atual = atual->proximo;
+    }
+
+    if (atual == NULL) {
+        return 0;
+    }
+
+    if (anterior == NULL) {
+        lista->primeiro = atual->proximo;
+    } else {
+        anterior->proximo = atual->proximo;
+    }
+
+    free(atual);
+    lista->qtd--;
+    return 1;
+}
+
+
 void mostrar(LDE *lista){
     Celula *atual = lista->primeiro;
     while(atual != NULL){
