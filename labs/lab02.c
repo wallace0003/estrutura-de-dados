@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Celula{
+typedef struct Celula {
     int valor;
-    struct Celula *proximo; 
+    struct Celula *proximo;
 } Celula;
 
-typedef struct{
+typedef struct {
     Celula *primeiro;
     int qtd;
-}LDE;
+} LDE;
 
 Celula *criar_celula(int valor){
     Celula *nova = malloc(sizeof(Celula));
@@ -27,40 +27,19 @@ LDE *criar_lista(){
 
 void inserir(LDE *lista, int valor){
     Celula *nova = criar_celula(valor);
-
-    if(lista->primeiro == NULL){
-        lista->primeiro = nova;
-        lista->qtd++;
-        return;
-    }
-
     Celula *anterior = NULL;
     Celula *atual = lista->primeiro;
-
     while(atual != NULL && atual->valor < nova->valor){
         anterior = atual;
         atual = atual->proximo;
     }
-
-    if(anterior == NULL && atual != NULL){
-        nova->proximo = atual;
+    if(anterior == NULL){
         lista->primeiro = nova;
-        lista->qtd++;
-        return;
-    }
-
-    if(anterior != NULL && atual == NULL){
+    } else {
         anterior->proximo = nova;
-        lista->qtd++;
-        return;
     }
-
-    if(anterior != NULL && atual != NULL){
-        anterior->proximo = nova;
-        nova->proximo = atual;
-        lista->qtd++;
-        return;
-    }
+    nova->proximo = atual;
+    lista->qtd++;
 }
 
 void remover(LDE *lista, int valor) {
@@ -91,7 +70,6 @@ void remover(LDE *lista, int valor) {
     return;
 }
 
-
 void mostrar(LDE *lista){
     Celula *atual = lista->primeiro;
     while(atual != NULL){
@@ -103,12 +81,15 @@ void mostrar(LDE *lista){
 
 int main(){
     LDE *lista = criar_lista();
-    for(int i = 10; i > 0; i--){
-        inserir(lista,i);
+    int num;
+    for(int i = 0; i < 10; i++){
+        scanf("%d", &num);
+        inserir(lista, num);
         mostrar(lista);
     }
-    for(int j = 0; j < 10; j++){
-        remover(lista, j);
+    for(int i = 0; i < 10; i++){
+        scanf("%d", &num);
+        remover(lista, num);
         mostrar(lista);
     }
     return 0;
