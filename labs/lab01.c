@@ -1,71 +1,141 @@
+
+
 #include <stdio.h>
 
-#define LEN 10
+#define TAMANHO 10
 
-typedef struct{
-  int dados[LEN];
-  int qtde;
-} LES;
+typedef struct {
+    int valores[TAMANHO];
+    int n;
+} Lista;
 
-int is_empty(LES *les){
-    return les -> qtde == 0;
+/**
+ * @brief Verifica se a lista está cheia.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @return int Retorna 1 se a lista estiver cheia, caso contrário, retorna 0.
+ */
+int esta_cheia(Lista *lista) {
+    return lista -> n  == TAMANHO;
 }
 
-int is_full(LES *les){
-   return les -> qtde == LEN;
+/**
+ * @brief Verifica se a lista está vazia.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @return int Retorna 1 se a lista estiver vazia, caso contrário, retorna 0.
+ */
+int esta_vazia(Lista *lista) {
+    return lista -> n == 0;
 }
 
-int get_index(LES *les, int value){
+/**
+ * @brief Encontra a posição onde um valor deve ser inserido na lista ordenada.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @param valor O valor a ser inserido.
+ * @return int Retorna o índice onde o valor deve ser inserido.
+ */
+int encontrar_posicao(Lista *lista, int valor) {
   int idx = 0;
-  while(idx < les -> qtde && les -> dados[idx] < value){
+  while(idx < lista -> n && lista -> valores[idx] < valor){
     idx++;
   }
   return idx;
 }
 
-void move_left(LES *les, int idx){
-  for (int n = idx; n < les -> qtde; n++){
-    les -> dados[n] = les -> dados[n + 1];
+/**
+ * @brief Move os elementos da lista para a direita a partir de um índice, criando espaço para um novo valor.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @param indice O índice a partir do qual os elementos serão movidos.
+ */
+void deslocar_direita(Lista *lista, int indice) {
+    for (int i = lista -> n; i > indice; i--){
+    lista -> valores[i] = lista -> valores[i -1];
   }
 }
 
-void insert(LES *les, int value){
-  if (is_full(les)){
+/**
+ * @brief Move os elementos da lista para a esquerda a partir de um índice, removendo um valor.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @param indice O índice a partir do qual os elementos serão movidos.
+ */
+void deslocar_esquerda(Lista *lista, int indice) {
+    for (int i = indice; i < lista -> n; i++){
+    lista -> valores[i] = lista -> valores[i + 1];
+  }
+}
+
+/**
+ * @brief Insere um valor na lista em sua posição ordenada.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @param valor O valor a ser inserido.
+ * @return int Retorna 1 se a inserção for bem-sucedida, ou 0 se a lista estiver cheia.
+ */
+int inserir(Lista *lista, int valor) {
+    if (esta_cheia(lista)){
     return 0;
   }
-  int idx = get_index(les, value);
-  move_right(les, idx);
-  les -> dados[idx] = value;
-  les -> qtde++;
+  int idx = encontrar_posicao(lista, valor);
+  deslocar_direita(lista, idx);
+  lista -> valores[idx] = valor;
+  lista -> n++;
+  return 1;
 }
 
-void delete(LES *les, int value){
-    if (is_empty(les)){
-        return;
+/**
+ * @brief Remove um valor da lista.
+ * 
+ * @param lista Ponteiro para a lista.
+ * @param valor O valor a ser removido.
+ * @return int Retorna o valor removido se a remoção for bem-sucedida, ou -1 se a lista estiver vazia.
+ */
+int remover(Lista *lista, int valor) {
+    if (esta_vazia(lista)){
+      return -1;
     };
-
-    int idx = get_index(les,value);
-    move_left(les,idx);
-    les -> dados[idx] = value;
-    les -> qtde --;
-    printf("Número apagado foi: %d", les -> dados[idx]);
-
+    int idx = 0;
+    while(lista->valores[idx] !=valor){
+      idx++;
+    }
+    deslocar_esquerda(lista, idx);
+    lista -> n--;
+    return valor;
 }
 
-void show(LES *les){
-  for (int i = 0; i < les -> qtde; i++){
-    printf("%d ", les -> dados[i]);
+/**
+ * @brief Exibe todos os valores da lista.
+ * 
+ * @param lista Ponteiro para a lista.
+ */
+void exibir_lista(const Lista *lista) {
+    for (int i = 0; i < lista -> n; i++){
+    printf("%d ", lista -> valores[i]);
+  }
     printf("\n");
-  }
 }
 
-int main() {
-  LES les;
-  les.qtde = 10;
-  LES *p_les = &les;
-  for(int num = 10; num <=0; num--){
-    insert(p_les, num);
-    show(p_les);
-  }
-  return 0;
+int main(void) {
+    Lista lista = { .n = 0 };
+    Lista *pl = &lista;
+    int valores[] = {21, 14, 13, 10, 87, 35, 27, 56, 85, 29};
+
+    for (int i = 0; i < TAMANHO; i++) {
+        inserir(pl, valores[i]);
+        exibir_lista(pl);
+    }
+
+    for (int i = 0; i < TAMANHO; i++) {
+        printf("O valor %d está na posição %d\n", valores[i], encontrar_posicao(pl, valores[i]));
+    }
+
+    for (int i = 0; i < TAMANHO; i++) {
+        remover(pl, valores[i]);
+        exibir_lista(pl);
+    }
+
+    return 0;
 }
