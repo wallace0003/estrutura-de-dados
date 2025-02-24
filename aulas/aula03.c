@@ -57,29 +57,29 @@ void inserir(LDDE *lista,   int valor){
 void remover(LDDE *lista, int valor){
     Celula *atual = lista->primeiro;
 
-    // Procurar o valor na lista
+    
     while(atual != NULL && atual->valor != valor){
         atual = atual->proximo;
     }
 
-    // Caso o valor não tenha sido encontrado
+    
     if(atual == NULL){
         printf("Valor %d não encontrado na lista.\n", valor);
         return;
     }
 
-    // Se for o primeiro elemento
+    
     if(atual->anterior == NULL){
         lista->primeiro = atual->proximo;
         if(atual->proximo != NULL){
             atual->proximo->anterior = NULL;
         }
     }
-    // Se for o último elemento
+   
     else if(atual->proximo == NULL){
         atual->anterior->proximo = NULL;
     }
-    // Se for um elemento no meio
+    
     else{
         atual->anterior->proximo = atual->proximo;
         atual->proximo->anterior = atual->anterior;
