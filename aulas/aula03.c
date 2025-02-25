@@ -54,42 +54,6 @@ void inserir(LDDE *lista,   int valor){
     lista->qtd++;
 }
 
-void remover(LDDE *lista, int valor){
-    Celula *atual = lista->primeiro;
-
-    
-    while(atual != NULL && atual->valor != valor){
-        atual = atual->proximo;
-    }
-
-    
-    if(atual == NULL){
-        printf("Valor %d não encontrado na lista.\n", valor);
-        return;
-    }
-
-    
-    if(atual->anterior == NULL){
-        lista->primeiro = atual->proximo;
-        if(atual->proximo != NULL){
-            atual->proximo->anterior = NULL;
-        }
-    }
-   
-    else if(atual->proximo == NULL){
-        atual->anterior->proximo = NULL;
-    }
-    
-    else{
-        atual->anterior->proximo = atual->proximo;
-        atual->proximo->anterior = atual->anterior;
-    }
-
-
-    free(atual);
-    lista->qtd--;
-}
-
 
 void mostrar(LDDE *lista){
     Celula *atual = lista->primeiro;
