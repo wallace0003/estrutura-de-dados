@@ -1,24 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Definição da estrutura de um nó na lista duplamente encadeada
 typedef struct no {
     int valor;
     struct no *anterior;
     struct no *proximo;
 } No;
 
-// Definição da estrutura da lista duplamente encadeada
 typedef struct lista_duplamente_encadeada {
     int quantidade;
     No *inicio;
 } ListaDuplamenteEncadeada;
 
-/**
- * Cria uma nova lista duplamente encadeada e a inicializa.
- *
- * @return Um ponteiro para a nova lista criada.
- */
 ListaDuplamenteEncadeada *criar_lista() {
     ListaDuplamenteEncadeada *lista = malloc(sizeof(ListaDuplamenteEncadeada));
     lista->inicio = NULL;
@@ -26,12 +19,6 @@ ListaDuplamenteEncadeada *criar_lista() {
     return lista;
 }
 
-/**
- * Cria um novo nó contendo o valor especificado.
- *
- * @param valor O valor a ser armazenado no nó.
- * @return Um ponteiro para o novo nó criado.
- */
 No *criar_no(int valor) {
     No *novo_no = malloc(sizeof(No));
     novo_no->valor = valor;
@@ -40,100 +27,75 @@ No *criar_no(int valor) {
     return novo_no;
 }
 
-/**
- * Insere um valor na lista de forma ordenada.
- *
- * @param lista Ponteiro para a lista onde o valor será inserido.
- * @param valor O valor a ser inserido na lista.
- */
 void inserir_valor(ListaDuplamenteEncadeada *lista, int valor) {
-    No *novo = criar_no(valor);
-    No *anterior = NULL;
-    No *atual = lista->inicio;
-
-    while(atual != NULL && atual->valor < novo->valor){
-        anterior = atual;
-        atual = atual->proximo;
-    }
-    if(anterior == NULL){//Inserir no início
-        lista->inicio = novo;
-        if(atual != NULL){
-            novo->proximo = atual;
-            atual->anterior = novo;
+    No *novo_no = criar_no(valor);
+    if (lista->inicio == NULL) {
+        lista->inicio = novo_no;
+    } else {
+        No *atual = lista->inicio, *anterior = NULL;
+        while (atual != NULL && atual->valor < valor) {
+            anterior = atual;
+            atual = atual->proximo;
         }
-    }else if(atual == NULL){//Inserir no final
-        anterior->proximo = novo;
-        novo->anterior = anterior;
-    }else{//Inserir no meio
-        anterior->proximo = novo;
-        novo->anterior = anterior;
-        novo->proximo = atual;
-        atual->anterior = novo;
+        if (anterior == NULL) {
+            novo_no->proximo = lista->inicio;
+            lista->inicio->anterior = novo_no;
+            lista->inicio = novo_no;
+        } else {
+            novo_no->proximo = atual;
+            novo_no->anterior = anterior;
+            anterior->proximo = novo_no;
+            if (atual != NULL) {
+                atual->anterior = novo_no;
+            }
+        }
     }
     lista->quantidade++;
 }
 
-/**
- * Exibe os valores da lista em ordem crescente.
- *
- * @param lista Ponteiro para a lista a ser exibida.
- */
 void exibir_lista(ListaDuplamenteEncadeada *lista) {
     No *atual = lista->inicio;
-    while(atual != NULL){
+    printf("Início -> ");
+    while (atual != NULL) {
         printf("%d ", atual->valor);
         atual = atual->proximo;
     }
-    printf("\n");
+    printf("<- Final\n");
 }
 
-/**
- * Exibe os valores da lista em ordem decrescente.
- *
- * @param lista Ponteiro para a lista a ser exibida.
- */
 void exibir_lista_invertida(ListaDuplamenteEncadeada *lista) {
+    if (lista->inicio == NULL) {
+        printf("Final -> <- Início\n");
+        return;
+    }
     No *atual = lista->inicio;
-
-    printf("Final -> ");
-    while(atual->proximo != NULL){
+    while (atual->proximo != NULL) {
         atual = atual->proximo;
     }
-    while(atual != NULL){
+    printf("Final -> ");
+    while (atual != NULL) {
         printf("%d ", atual->valor);
         atual = atual->anterior;
     }
-    printf("<- Início");
-    printf("\n");
+    printf("<- Início\n");
 }
 
-/**
- * Remove o nó que contém o valor especificado da lista.
- *
- * @param lista Ponteiro para a lista de onde o valor será removido.
- * @param valor O valor a ser removido da lista.
- */
 void remover_valor(ListaDuplamenteEncadeada *lista, int valor) {
-    No *anterior = NULL;
     No *atual = lista->inicio;
-
-    if(lista->inicio == NULL){
-        return;
-    }
-
-    while(atual != NULL && atual->valor != valor){
-        anterior = atual;
+    while (atual != NULL && atual->valor != valor) {
         atual = atual->proximo;
     }
-
-    if(atual != NULL && anterior == NULL){
-        atual = atual->proximo;
-    }else if(atual->anterior != NULL && atual->proximo != NULL){
-        anterior = atual->anterior;
-        atual = atual->proximo;
+    if (atual == NULL) return;
+    if (atual->anterior != NULL) {
+        atual->anterior->proximo = atual->proximo;
+    } else {
+        lista->inicio = atual->proximo;
     }
-
-
+    if (atual->proximo != NULL) {
+        atual->proximo->anterior = atual->anterior;
+    }
+    free(atual);
+    lista->quantidade--;
 }
 
 int main(void) {
