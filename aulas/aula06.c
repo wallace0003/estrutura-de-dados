@@ -55,6 +55,26 @@ void mostra_fila(Fila *fila, int inversa){
     printf("\n");
 }
 
+int desenfileirar(Fila *fila){
+    if(fila->qtde == 0){
+        return -1;
+    }
+
+    Celula *liberar = fila->head;
+    int valor = fila->head->valor;
+    if(fila->qtde == 1){
+        fila->head = NULL;
+        fila->tail = NULL;
+    } else{
+        fila->head->proximo->anterior = NULL;
+        fila->head = fila->head->proximo;
+    }
+    fila->qtde--;
+    free(liberar);
+    return valor;
+
+}
+
 int main(){
     Fila *fila = malloc(sizeof(Fila));
     fila->head = NULL;
@@ -69,7 +89,17 @@ int main(){
     mostra_fila(fila, 0);
     enfileirar(fila, 1);
     mostra_fila(fila, 10);
-    
-    
+    printf("%d \n", desenfileirar(fila));
+    mostra_fila(fila, 0);
+    mostra_fila(fila, 10);
+    printf("%d \n", desenfileirar(fila));
+    mostra_fila(fila, 0);
+    mostra_fila(fila, 10);
+    printf("%d \n", desenfileirar(fila));
+    mostra_fila(fila, 0);
+    mostra_fila(fila, 10);
+    printf("%d \n", desenfileirar(fila));
+    mostra_fila(fila, 0);
+    mostra_fila(fila, 10);
     return 0;
 }
