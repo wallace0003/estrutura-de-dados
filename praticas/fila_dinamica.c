@@ -45,7 +45,7 @@ void enfileirar(Fila *fila, int valor){
 void mostra_fila(Fila *fila, int inversa){
     if(inversa){
         Celula *atual = fila->head;
-        printf("HEAD ->");
+        printf("HEAD -> ");
         while(atual != NULL){
             printf("%d ", atual->valor);
             atual = atual->proximo;
@@ -53,7 +53,7 @@ void mostra_fila(Fila *fila, int inversa){
         printf("<- TAIL");
     } else{
         Celula *atual = fila->tail;
-        printf("TAIL ->");
+        printf("TAIL -> ");
         while(atual != NULL){
             printf("%d ", atual->valor);
             atual = atual->anterior;
@@ -84,25 +84,25 @@ int desenfileirar(Fila *fila){
 
 int main(){
     Fila *fila = criar_fila();
-    enfileirar(fila, 10);
-    mostra_fila(fila, 0);
-    enfileirar(fila, 20);
-    mostra_fila(fila, 1);
-    enfileirar(fila, 20);
-    mostra_fila(fila, 0);
-    enfileirar(fila, 1);
-    mostra_fila(fila, 10);
-    printf("%d \n", desenfileirar(fila));
-    mostra_fila(fila, 0);
-    mostra_fila(fila, 10);
-    printf("%d \n", desenfileirar(fila));
-    mostra_fila(fila, 0);
-    mostra_fila(fila, 10);
-    printf("%d \n", desenfileirar(fila));
-    mostra_fila(fila, 0);
-    mostra_fila(fila, 10);
-    printf("%d \n", desenfileirar(fila));
-    mostra_fila(fila, 0);
-    mostra_fila(fila, 10);
+    int n_clientes = 0;
+    
+    printf("Digite quantos clientes você deseja atender: ");
+    scanf("%d", &n_clientes);
+    printf("\n");
+    printf("Número de clientes: %d ", n_clientes);
+    printf("\n");
+
+    for(int i = 1; i <= n_clientes; i++){
+        enfileirar(fila, i);
+        mostra_fila(fila, 1);
+        mostra_fila(fila, 0);
+    }
+
+    for(int i = 1; i <= n_clientes; i++){
+        printf("Cliente atendido: %d \n", desenfileirar(fila));
+        mostra_fila(fila, 1);
+    }
+
+    
     return 0;
 }
