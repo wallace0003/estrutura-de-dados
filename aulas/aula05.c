@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <stdlib.h>
+typedef struct
 #define CAP 10
 
 typedef struct{
