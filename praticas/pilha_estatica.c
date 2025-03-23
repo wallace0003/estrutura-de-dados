@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define CAP 10
 
-typedef struct{
-    struct Celula *anterior;
+typedef struct Celula {
     int valor;
-    struct Celula *proximo
+    struct Celula *anterior;
+    struct Celula *proximo;
 } Celula;
 
 typedef struct{
@@ -15,9 +16,9 @@ typedef struct{
 
 Celula *criar_celula(int valor){
     Celula *nova = malloc(sizeof(Celula));
+    nova->valor = valor;
     nova->anterior = NULL;
     nova->proximo = NULL;
-    nova->valor = valor;
     return nova;
 }
 
@@ -29,6 +30,10 @@ Pilha *criar_pilha(){
 }
 
 void push(Pilha *pilha, int valor){
+    if(pilha->qtd == CAP){
+        return;
+    }
+
     Celula *nova = criar_celula(valor);
     if(pilha->qtd > 0){
         pilha->topo->proximo = nova;
@@ -38,46 +43,53 @@ void push(Pilha *pilha, int valor){
     pilha->qtd++;
 }
 
-int pop(Pilha *pilha){
+void pop(Pilha *pilha){
     if(pilha->qtd == 0){
-        return 0;
+        return;
     }
-
     Celula *liberar = pilha->topo;
     if(pilha->topo->anterior == NULL){
         pilha->topo = NULL;
-    } else  {
+       
+    } else {
         Celula *anterior = pilha->topo->anterior;
         anterior->proximo = NULL;
-        pilha->topo = anterior;
+        pilha->topo = pilha->topo->anterior;
     }
+
     free(liberar);
     pilha->qtd--;
 }
 
-
 void mostrar(Pilha *pilha){
     Celula *atual = pilha->topo;
-    printf("Topo ->");
+    printf("Fim -> ");
     while(atual != NULL){
         printf("%d ", atual->valor);
         atual = atual->anterior;
     }
-    printf("<- Base");
+    printf("<- Começo\n");
 }
 
 int main(){
     Pilha *pilha = criar_pilha();
-    for(int i = 0; i<10; i++){
+
+    for(int i = 0; i < 10; i++){
         push(pilha, i);
         mostrar(pilha);
     }
-    for(int i = 0; i<10; i++){
+
+    for(int i = 0; i < 10; i++){
         pop(pilha);
         mostrar(pilha);
     }
+    
     return 0;
 }
+
+
+
+
 
 
 
