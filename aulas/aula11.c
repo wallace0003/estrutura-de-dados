@@ -5,6 +5,7 @@ typedef struct Vertice {
     int chave;
     struct Vertice *esq;
     struct Vertice *dir;
+    struct Vertice *pai; // novo campo
     int altura;
 } Vertice;
 
@@ -24,11 +25,16 @@ int fatorBalanceamento(Vertice *n) {
     return altura(n->dir) - altura(n->esq);
 }
 
-// Rotações
+// Rotações com atualização do pai
 Vertice* rotacaoEsquerda(Vertice *x) {
     Vertice *y = x->dir;
     x->dir = y->esq;
+    if (y->esq) y->esq->pai = x;
+
     y->esq = x;
+
+    y->pai = x->pai;
+    x->pai = y;
 
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
@@ -39,7 +45,12 @@ Vertice* rotacaoEsquerda(Vertice *x) {
 Vertice* rotacaoDireita(Vertice *y) {
     Vertice *x = y->esq;
     y->esq = x->dir;
+    if (x->dir) x->dir->pai = y;
+
     x->dir = y;
+
+    x->pai = y->pai;
+    y->pai = x;
 
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
@@ -47,27 +58,32 @@ Vertice* rotacaoDireita(Vertice *y) {
     return x;
 }
 
-// Inserção com balanceamento
+// Inserção com referência ao pai
 Vertice* inserir(Vertice *raiz, int chave) {
     if (raiz == NULL) {
         Vertice *novo = (Vertice*)malloc(sizeof(Vertice));
         novo->chave = chave;
-        novo->esq = novo->dir = NULL;
+        novo->esq = novo->dir = novo->pai = NULL;
         novo->altura = 0;
         return novo;
     }
 
-    if (chave < raiz->chave)
-        raiz->esq = inserir(raiz->esq, chave);
-    else if (chave > raiz->chave)
-        raiz->dir = inserir(raiz->dir, chave);
-    else
-        return raiz; // chave duplicada não é permitida
+    if (chave < raiz->chave) {
+        Vertice *filho = inserir(raiz->esq, chave);
+        raiz->esq = filho;
+        filho->pai = raiz;
+    } else if (chave > raiz->chave) {
+        Vertice *filho = inserir(raiz->dir, chave);
+        raiz->dir = filho;
+        filho->pai = raiz;
+    } else {
+        return raiz; // chave duplicada
+    }
 
     raiz->altura = 1 + max(altura(raiz->esq), altura(raiz->dir));
     int fb = fatorBalanceamento(raiz);
 
-    // Casos de desbalanceamento:
+    // Casos de rotação
     if (fb < -1 && chave < raiz->esq->chave)
         return rotacaoDireita(raiz); // Caso 3
 
@@ -76,18 +92,20 @@ Vertice* inserir(Vertice *raiz, int chave) {
 
     if (fb < -1 && chave > raiz->esq->chave) {
         raiz->esq = rotacaoEsquerda(raiz->esq);
+        raiz->esq->pai = raiz;
         return rotacaoDireita(raiz); // Caso 4
     }
 
     if (fb > 1 && chave < raiz->dir->chave) {
         raiz->dir = rotacaoDireita(raiz->dir);
+        raiz->dir->pai = raiz;
         return rotacaoEsquerda(raiz); // Caso 2
     }
 
     return raiz;
 }
 
-// Impressão em ordem
+// Impressão em ordem crescente com pai
 void imprimir(Vertice *raiz) {
     if (raiz != NULL) {
         imprimir(raiz->esq);
@@ -104,9 +122,9 @@ int main() {
     Vertice *raiz = NULL;
     for (int i = 0; i < n; i++) {
         raiz = inserir(raiz, valores[i]);
+        raiz->pai = NULL; // garantir que raiz continue sendo raiz após rotações
     }
 
-    printf("Árvore AVL final:\n");
     imprimir(raiz);
 
     return 0;
