@@ -88,14 +88,14 @@ Vertice* inserir(Vertice *raiz, int chave) {
 }
 
 // Impressão em ordem
-void imprimir(Vertice *raiz, int nivel) {
+void imprimir(Vertice *raiz) {
     if (raiz != NULL) {
-        imprimir(raiz->dir, nivel + 1);
-        for (int i = 0; i < nivel; i++) printf("   ");
-        printf("%d\n", raiz->chave);
-        imprimir(raiz->esq, nivel + 1);
+        imprimir(raiz->esq);
+        printf("%d ", raiz->chave);
+        imprimir(raiz->dir);
     }
 }
+
 
 int main() {
     int valores[] = {21, 26, 30, 9, 4, 14, 28, 18, 15, 10, 2, 3, 7};
@@ -107,7 +107,7 @@ int main() {
     }
 
     printf("Árvore AVL final:\n");
-    imprimir(raiz, 0);
+    imprimir(raiz);
 
     return 0;
 }
