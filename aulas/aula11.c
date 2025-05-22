@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 typedef struct Vertice {
     int chave;
     struct Vertice *esq;
@@ -38,7 +39,6 @@ Vertice* rotacaoEsquerda(Vertice *x) {
 
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
-
     return y;
 }
 
